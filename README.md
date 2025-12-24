@@ -1,0 +1,6 @@
+# Setup
+
+- run `python -m venv venv` inside the project root folder in the terminal
+- start the virtual environment
+- run `pip install -r requirements.txt` in the terminal
+- set the project root path and the dataset path
