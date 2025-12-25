@@ -29,7 +29,7 @@ def get_train_transform_strong(img_size: int = 224):
             saturation=0.2,
             hue=0.1,
         ),
-        transforms.GaussianBlur(kernel_size=3, sigma=(0.0, 0.3)),
+        transforms.GaussianBlur(kernel_size=3, sigma=(0.1, 0.3)),
         transforms.RandomPerspective(distortion_scale=0.5, p=0.5),
         transforms.ToTensor(),
         transforms.Normalize(
