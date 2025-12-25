@@ -5,7 +5,7 @@
 from torchvision import transforms
 
 
-def get_train_transform_mild(img_size: int = 64):
+def get_train_transform_mild(img_size: int = 224):
     return transforms.Compose([
         transforms.Resize((img_size, img_size)),
         transforms.RandomHorizontalFlip(p=0.5),
@@ -17,7 +17,7 @@ def get_train_transform_mild(img_size: int = 64):
     ])
 
 
-def get_train_transform_strong(img_size: int = 64):
+def get_train_transform_strong(img_size: int = 224):
     return transforms.Compose([
         transforms.RandomResizedCrop(img_size, scale=(0.6, 1.0)),
         transforms.RandomHorizontalFlip(),
