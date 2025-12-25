@@ -1,3 +1,7 @@
+# =======================
+# mandatory coding task 2
+# =======================
+
 import torch
 
 from pathlib import Path
