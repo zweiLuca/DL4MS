@@ -57,10 +57,11 @@ class EuroSATDataset(Dataset):
 
 # === Example ===
 
-ds = EuroSATDataset(
-    dataset_root="coding_task_data/EuroSAT_RGB",
-    split_file="./splits/train.txt"
-)
+if __name__ == "__main__":
+    ds = EuroSATDataset(
+        dataset_root="coding_task_data/EuroSAT_RGB",
+        split_file="./splits/train.txt"
+    )
 
-img, label, path = ds[0]
-print(img.size, label, path)
+    img, label, path = ds[0]
+    print(img.size, label, path)
