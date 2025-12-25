@@ -1,3 +1,7 @@
+# =======================
+# mandatory coding task 1
+# =======================
+
 import os
 import random
 
