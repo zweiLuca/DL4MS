@@ -6,7 +6,7 @@ seed: 1234567 # Matriculation number Luca Martin
 
 paths:
   project_root: "."
-  dataset_root: "/coding_task_data/EuroSAT_RGB"
+  dataset_root: "./coding_task_data/EuroSAT_RGB"
 
 splits:
   train: "splits/train.txt"

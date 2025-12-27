@@ -11,7 +11,7 @@ def train_one_epoch(model, loader, optimizer, device):
     model.train()
     running_loss = 0.0
 
-    for images, labels, _ in tqdm(loader):
+    for images, labels, _ in tqdm(loader, unit="Batch"):
         images = images.to(device)
         labels = labels.to(device)
 

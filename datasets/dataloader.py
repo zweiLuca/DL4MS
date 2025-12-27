@@ -4,7 +4,7 @@
 
 from torch.utils.data import DataLoader
 
-from eurosat_dataset import EuroSATDataset
+from datasets.eurosat_dataset import EuroSATDataset
 
 
 class CustomDataLoader():
@@ -33,23 +33,3 @@ class CustomDataLoader():
     
     def get_data_loader(self):
         return self.loader
-
-
-# === Example ===
-
-if __name__ == "__main__":
-    from multiprocessing import freeze_support
-    from transforms import get_train_transform_mild, get_train_transform_strong
-
-    freeze_support()
-
-    loader = CustomDataLoader(
-        dataset_root="coding_task_data/EuroSAT_RGB",
-        split_file="./splits/train.txt",
-        transform=get_train_transform_strong(),
-        batch_size=16,
-        shuffle=True
-        ).get_data_loader()
-
-    images, labels, paths = next(iter(loader))
-    print(images.shape, labels.shape)

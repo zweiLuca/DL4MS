@@ -3,7 +3,7 @@ import torch
 from datasets.dataloader import CustomDataLoader
 from datasets.transforms import get_eval_transform, get_train_transform_mild, get_train_transform_strong
 from model.model import Model
-import set_seed
+from set_seed import set_seed
 from training_loop import train_model
 from utils.config import load_config
 
