@@ -64,6 +64,16 @@ def main():
 
     optimizer = torch.optim.Adam(params=model.parameters(), lr=LR)
 
+    print(
+        "========================\n"
+        "Training the model with:\n"
+        f"- {cfg["training"]["augmentation"]} data augmentation"
+        f"- {len(train_loader.dataset)} images\n"
+        f"- {round(len(train_loader.dataset) / BATCH_SIZE)} batches\n"
+        f"- batchsize {BATCH_SIZE}\n"
+        f"- {NUM_EPOCHS} epochs\n"
+        "========================\n"
+    )
     history, best_state = train_model(
         model=model,
         trian_loader=train_loader,
