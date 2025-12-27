@@ -8,9 +8,8 @@ import random
 from pathlib import Path
 from typing import List
 
-
-SEED = 1234567
-random.seed(SEED)
+from set_seed import set_seed
+from utils.config import load_config
 
 
 class DataSplitter():
@@ -42,7 +41,12 @@ class DataSplitter():
             imgs: List[str] = sorted(next(os.walk(self.data_dir / cls))[2])
             random.shuffle(imgs)
 
-            assert len(imgs) >= n_train + n_val + n_test
+            if len(imgs) < n_train + n_val + n_test:
+                raise AssertionError(
+                    "Error: Not enough images.\n"
+                    f"Tried splitting with {n_train} (train) + {n_val} (validation) + {n_test} (test) = {n_train + n_val + n_test} images. "
+                    f"Only got {len(imgs)} images total."
+                )
 
             train = imgs[:n_train]
             val = imgs[n_train:n_train + n_val]
@@ -77,7 +81,19 @@ class DataSplitter():
                     f.write(item + "\n")
 
 
-# === Example ===
+if __name__ == "__main__":
+    cfg = load_config()
+    set_seed(cfg["seed"])
+    
+    train_size = cfg["splits"]["train_size"]
+    val_size = cfg["splits"]["val_size"]
+    test_size = cfg["splits"]["test_size"]
 
-ds = DataSplitter(".", "coding_task_data/EuroSAT_RGB") # works with absolute and relative paths
-ds.split_data()
+    ds = DataSplitter(
+        ".",
+        "coding_task_data/EuroSAT_RGB",     # works with absolute and relative paths
+        train_size=train_size,
+        val_size=val_size,
+        test_size=test_size
+    )
+    ds.split_data()

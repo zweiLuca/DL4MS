@@ -9,8 +9,11 @@ paths:
   dataset_root: "./coding_task_data/EuroSAT_RGB"
 
 splits:
+  train_size: 10000
   train: "splits/train.txt"
+  val_size: 5000
   val: "splits/val.txt"
+  test_size: 5000
   test: "splits/test.txt"
 
 training:
