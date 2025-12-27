@@ -3,7 +3,7 @@
 # =======================
 
 from eval import evaluate
-from train import train_one_epoch
+from train_epoch import train_one_epoch
 
 
 def train_model(model, trian_loader, val_loader, optimizer, device, num_epochs):
