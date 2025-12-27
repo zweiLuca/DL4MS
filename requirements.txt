@@ -1,5 +1,6 @@
 matplotlib
 pillow
+PyYAML
 torch
 torchvision
 tqdm
