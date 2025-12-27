@@ -57,7 +57,7 @@ def main():
         shuffle=False
     ).get_data_loader()
 
-    num_classes = len(train_loader.dataset)
+    num_classes = len(train_loader.dataset.classes)
 
     model = Model(num_classes=num_classes).get_model()
     model.to(DEVICE)
