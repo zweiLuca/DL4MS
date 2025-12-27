@@ -1,3 +1,4 @@
+import math
 import torch
 
 from datasets.dataloader import CustomDataLoader
@@ -67,9 +68,9 @@ def main():
     print(
         "========================\n"
         f"Training the model on {DEVICE} with:\n"
-        f"- {cfg["training"]["augmentation"]} data augmentation"
+        f"- {cfg["training"]["augmentation"]} data augmentation\n"
         f"- {len(train_loader.dataset)} images\n"
-        f"- {round(len(train_loader.dataset) / BATCH_SIZE)} batches\n"
+        f"- {math.ceil(len(train_loader.dataset) / BATCH_SIZE)} batches\n"
         f"- batchsize {BATCH_SIZE}\n"
         f"- {NUM_EPOCHS} epochs\n"
         "========================\n"

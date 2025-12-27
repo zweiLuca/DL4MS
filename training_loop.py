@@ -18,7 +18,9 @@ def train_model(model, trian_loader, val_loader, optimizer, device, num_epochs):
 
     for epoch in range(num_epochs):
         train_loss = train_one_epoch(model, trian_loader, optimizer, device)
-        val_acc, val_tpr = evaluate(model, val_loader, device)
+        val_metrics = evaluate(model, val_loader, device)
+        val_acc = val_metrics["accuracy"]
+        val_tpr = val_metrics["tpr_per_class"]
 
         history["train_loss"].append(train_loss)
         history["val_acc"].append(val_acc)
