@@ -20,7 +20,7 @@ training:
   batch_size: 16 # Set the batch size for each training epoch
   num_epochs: 20 # Set the number of epochs
   learning_rate: 0.0001 # Set the learning rate
-  augmentation: "mild" # "mild" or "strong"
+  augmentation: "strong" # "mild" or "strong"
 
 hardware:
   num_workers: 4
