@@ -66,7 +66,7 @@ def main():
 
     print(
         "========================\n"
-        "Training the model with:\n"
+        f"Training the model on {DEVICE} with:\n"
         f"- {cfg["training"]["augmentation"]} data augmentation"
         f"- {len(train_loader.dataset)} images\n"
         f"- {round(len(train_loader.dataset) / BATCH_SIZE)} batches\n"
