@@ -12,6 +12,10 @@ from set_seed import set_seed
 from utils.config import load_config
 
 
+# =================
+# PREDICTION SCRIPT
+# =================
+
 @torch.no_grad()
 def main():
     cfg = load_config()
@@ -37,13 +41,12 @@ def main():
     else:
         experiment_name = "mild_aug"
 
-    val_transform = get_eval_transform()
-
+    test_transform = get_eval_transform()
 
     test_loader = CustomDataLoader(
         dataset_root=DATASET_ROOT,
         split_file=TEST_SPLIT,
-        transform=val_transform,
+        transform=test_transform,
         batch_size=BATCH_SIZE,
         shuffle=False
     ).get_data_loader()
