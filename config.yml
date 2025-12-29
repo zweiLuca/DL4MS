@@ -9,18 +9,18 @@ paths:
   dataset_root: "./coding_task_data/EuroSAT_RGB"
 
 splits:
+  split_dir: "splits"
   train_size: 10000
-  train: "splits/train.txt"
+  train: "train.txt"
   val_size: 5000
-  val: "splits/val.txt"
+  val: "val.txt"
   test_size: 5000
-  test: "splits/test.txt"
+  test: "test.txt"
 
 training:
   batch_size: 16 # Set the batch size for each training epoch
   num_epochs: 20 # Set the number of epochs
   learning_rate: 0.0001 # Set the learning rate
-  augmentation: "strong" # "mild" or "strong"
 
 reproduce:
   save_logits: False
@@ -30,5 +30,5 @@ hardware:
   device: "auto" # "cuda", "cpu", or "auto"
 
 outputs:
-  model_dir: "models"
+  model_dir: "outputs/models"
   output_dir: "outputs"

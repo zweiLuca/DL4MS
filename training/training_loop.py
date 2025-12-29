@@ -2,8 +2,8 @@
 # mandatory coding task 2
 # =======================
 
-from eval import evaluate
-from train_epoch import train_one_epoch
+from evaluation.eval import evaluate
+from training.train_epoch import train_one_epoch
 
 
 def train_model(model, trian_loader, val_loader, optimizer, device, num_epochs):

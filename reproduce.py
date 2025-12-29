@@ -2,14 +2,13 @@
 # mandatory coding task 2
 # =======================
 
-import argparse
 import torch
 
 from datasets.dataloader import CustomDataLoader
 from datasets.transforms import get_eval_transform
-from eval import evaluate
-from model.model import Model
-from set_seed import set_seed
+from evaluation.eval import evaluate
+from models.model import Model
+from utils.set_seed import set_seed
 from utils.config import load_config
 
 # ====================
@@ -24,7 +23,7 @@ def main():
     PROJECT_ROOT = cfg["paths"]["project_root"]
     DATASET_ROOT = cfg["paths"]["dataset_root"]
 
-    TEST_SPLIT = PROJECT_ROOT / cfg["splits"]["test"]
+    TEST_SPLIT = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["test"]
     MODEL_PATH = PROJECT_ROOT / cfg["outputs"]["model_dir"]
     OUTPUT_PATH = PROJECT_ROOT / cfg["outputs"]["output_dir"]
 

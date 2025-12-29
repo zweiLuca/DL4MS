@@ -1,6 +1,8 @@
+--extra-index-url https://download.pytorch.org/whl/cu126
+
+torch
+torchvision
 matplotlib
 pillow
 PyYAML
-torch
-torchvision
 tqdm

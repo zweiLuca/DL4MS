@@ -8,3 +8,4 @@
 # Structure
 
 1. Coding Task 1 is solved inside `data_splitter.py`
+2. Coding Task 2 is solved inside 
