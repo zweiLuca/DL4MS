@@ -35,12 +35,6 @@ def main():
     else:
         DEVICE = cfg["hardware"]["device"]
 
-    aug = cfg["training"]["augmentation"]
-    if aug == "strong":
-        experiment_name = "strong_aug"
-    else:
-        experiment_name = "mild_aug"
-
     test_transform = get_eval_transform()
 
     test_loader = CustomDataLoader(
@@ -54,7 +48,7 @@ def main():
     num_classes = len(test_loader.dataset.classes)
 
     model = Model(num_classes=num_classes).get_model()
-    model.load_state_dict(torch.load(MODEL_PATH / f"best_model_{experiment_name}.pt", map_location=DEVICE))
+    model.load_state_dict(torch.load(MODEL_PATH / f"final_model.pt", map_location=DEVICE))
     model.to(DEVICE)
 
     test_metrics = evaluate(
