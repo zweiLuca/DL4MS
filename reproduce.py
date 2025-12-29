@@ -34,8 +34,6 @@ def main():
     else:
         DEVICE = cfg["hardware"]["device"]
 
-    aug = cfg["training"]["augmentation"]
-
     test_transform = get_eval_transform()
 
     test_loader = CustomDataLoader(

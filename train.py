@@ -102,7 +102,7 @@ def run_training(
     best_val_acc = max(history["val_acc"])
 
     print(
-        f"Training finished for {experiment_name}:"
+        f"Training finished for {experiment_name}: "
         f"best val acc = {best_val_acc:.4f}\n"
     )
 
