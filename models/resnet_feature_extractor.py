@@ -13,7 +13,7 @@ class ResNet18FeatureExtractor(nn.Module):
         super().__init__()
 
         if pretrained:
-            backbone = resnet18(weigths=ResNet18_Weights.IMAGENET1K_V1)
+            backbone = resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
         else:
             backbone = resnet18(weights=None)
 
