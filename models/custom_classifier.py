@@ -8,7 +8,7 @@ import torch.nn as nn
 from models.resnet_feature_extractor import ResNet18FeatureExtractor
 
 
-class YourNet(nn.Module):
+class CustomClassifier(nn.Module):
     def __init__(self, num_classes):
         super().__init__()
 
