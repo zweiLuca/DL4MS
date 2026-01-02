@@ -6,16 +6,19 @@ seed: 1234567 # Matriculation number Luca Martin
 
 paths:
   project_root: "."
-  dataset_root: "./coding_task_data/EuroSAT_RGB"
+  dataset_root: "./coding_task_data/EuroSAT_MS"
 
 splits:
   split_dir: "splits"
   train_size: 10000
   train: "train.txt"
+  train_ms: "train_ms.txt"
   val_size: 5000
   val: "val.txt"
+  val_ms: "val_ms.txt"
   test_size: 5000
   test: "test.txt"
+  test_ms: "test_ms.txt"
 
 training:
   batch_size: 16 # Set the batch size for each training epoch

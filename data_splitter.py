@@ -30,6 +30,10 @@ class DataSplitter():
         self.val_split: List[str] = []
         self.test_split: List[str] = []
 
+        self.ms = False
+        if self.dataset_root.match("*_MS"):
+            self.ms = True
+
     def split_data(self) -> None:
         classes: List[str] = sorted(next(os.walk(self.dataset_root))[1])
         n_classes = len(classes)
@@ -75,11 +79,18 @@ class DataSplitter():
         split_dir: str = self.project_root / self.cfg["splits"]["split_dir"]
         os.makedirs(split_dir, exist_ok=True)
 
-        file_names: str = [
-            self.cfg["splits"]["train"],
-            self.cfg["splits"]["val"],
-            self.cfg["splits"]["test"]
-        ]
+        if self.ms:
+            file_names: str = [
+                self.cfg["splits"]["train_ms"],
+                self.cfg["splits"]["val_ms"],
+                self.cfg["splits"]["test_ms"]
+            ] 
+        else:
+            file_names: str = [
+                self.cfg["splits"]["train"],
+                self.cfg["splits"]["val"],
+                self.cfg["splits"]["test"]
+            ]
 
         for name, split in zip(
             file_names,
