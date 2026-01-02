@@ -4,6 +4,7 @@ import torch
 from datasets.dataloader import CustomDataLoader
 from datasets.transforms import get_eval_transform, get_train_transform_mild, get_train_transform_strong
 from evaluation.plots import plot_validation_accuracy, plot_validation_tpr
+from models.custom_classifier import CustomClassifier
 from models.model import Model
 from training.training_loop import train_model
 from utils.set_seed import set_seed
@@ -17,13 +18,19 @@ def run_training(
         experiment_name: str,
         train_transform,
         cfg,
-        device
+        device,
+        ms = False
     ):
     PROJECT_ROOT = cfg["paths"]["project_root"]
     DATASET_ROOT = cfg["paths"]["dataset_root"]
 
     TRAIN_SPLIT = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["train"]
     VAL_SPLIT = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["val"]
+
+    # --- For task 3 when using ms-images ---
+    if ms:
+        TRAIN_SPLIT = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["train_ms"]
+        VAL_SPLIT = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["val_ms"]
     
     MODEL_PATH = PROJECT_ROOT / cfg["outputs"]["model_dir"]
     OUTPUT_PATH = PROJECT_ROOT / cfg["outputs"]["output_dir"]
@@ -36,13 +43,18 @@ def run_training(
 
     val_transform = get_eval_transform()
 
+    # --- For task 3 when using ms-images ---
+    if ms:
+        val_transform = None
+
 
     train_loader = CustomDataLoader(
         dataset_root=DATASET_ROOT,
         split_file=TRAIN_SPLIT,
         transform=train_transform,
         batch_size=BATCH_SIZE,
-        shuffle=True
+        shuffle=True,
+        ms=ms
     ).get_data_loader()
 
     val_loader = CustomDataLoader(
@@ -50,12 +62,20 @@ def run_training(
         split_file=VAL_SPLIT,
         transform=val_transform,
         batch_size=BATCH_SIZE,
-        shuffle=False
+        shuffle=False,
+        ms=ms
     ).get_data_loader()
 
     num_classes = len(train_loader.dataset.classes)
 
     model = Model(num_classes=num_classes).get_model()
+    model_description = "ResNet18 Model on RGB images"
+
+    # --- For task 3 when using ms-images ---
+    if ms:
+        model = CustomClassifier(num_classes=num_classes)
+        model_description = "Custom ResNet18 Model on Multispectral images"
+
     model.to(DEVICE)
 
     optimizer = torch.optim.Adam(params=model.parameters(), lr=LR)
@@ -63,6 +83,7 @@ def run_training(
     print(
         "========================\n"
         f"Training {experiment_name} on {DEVICE} with:\n"
+        f"- {model_description} from {DATASET_ROOT}\n"
         f"- {len(train_loader.dataset)} images\n"
         f"- {math.ceil(len(train_loader.dataset) / BATCH_SIZE)} batches\n"
         f"- batchsize {BATCH_SIZE}\n"
@@ -72,7 +93,7 @@ def run_training(
 
     history, best_state = train_model(
         model=model,
-        trian_loader=train_loader,
+        train_loader=train_loader,
         val_loader=val_loader,
         optimizer=optimizer,
         device=DEVICE,
@@ -83,6 +104,9 @@ def run_training(
     OUTPUT_PATH.mkdir(exist_ok=True, parents=True)
 
     model_file = MODEL_PATH / f"best_model_{experiment_name}.pt"
+    if ms:
+        model_file = MODEL_PATH / f"final_model_{experiment_name}.pt"
+
     torch.save(best_state, model_file)
 
     plots_dir = OUTPUT_PATH / "plots"
@@ -122,44 +146,70 @@ def main():
     else:
         DEVICE = cfg["hardware"]["device"]
 
-    results = []
-
-    # mild augmentation
-    results.append(
-        run_training(
-            experiment_name="mild_aug",
-            train_transform=get_train_transform_mild(),
-            cfg=cfg,
-            device=DEVICE
-        )
-    )
-
-    # strong augmentation
-    results.append(
-        run_training(
-            experiment_name="strong_aug",
-            train_transform=get_train_transform_strong(),
-            cfg=cfg,
-            device=DEVICE
-        )
-    )
-
-    best = max(results, key=lambda x: x["best_val_acc"])
-
     PROJECT_ROOT = cfg["paths"]["project_root"]
     MODEL_PATH = PROJECT_ROOT / cfg["outputs"]["model_dir"]
 
-    final_model_path = MODEL_PATH / "final_model.pt"
-    torch.save(best["best_state"], final_model_path)
+    # --- For task 3 when using ms-images ---
+    MS = False
+    if cfg["paths"]["dataset_root"].match("*_MS"):
+        MS = True
 
-    print(
-        "========================\n"
-        "FINAL MODEL SELECTION\n"
-        f"Selected experiment: {best['experiment']}\n"
-        f"Validation accuracy: {best['best_val_acc']:.4f}\n"
-        f"Saved as: {final_model_path}\n"
-        "========================"
-    )
+    results = []
+
+    if not MS:
+        # mild augmentation
+        results.append(
+            run_training(
+                experiment_name="mild_aug",
+                train_transform=get_train_transform_mild(),
+                cfg=cfg,
+                device=DEVICE,
+                ms=MS
+            )
+        )
+
+        # strong augmentation
+        results.append(
+            run_training(
+                experiment_name="strong_aug",
+                train_transform=get_train_transform_strong(),
+                cfg=cfg,
+                device=DEVICE,
+                ms=MS
+            )
+        )
+
+        best = max(results, key=lambda x: x["best_val_acc"])
+
+        final_model_path = MODEL_PATH / "final_model.pt"
+    
+        torch.save(best["best_state"], final_model_path)
+
+        print(
+            "========================\n"
+            "FINAL MODEL SELECTION\n"
+            f"Selected experiment: {best['experiment']}\n"
+            f"Validation accuracy: {best['best_val_acc']:.4f}\n"
+            f"Saved as: {final_model_path}\n"
+            "========================"
+        )
+    else:
+        # --- For task 3 when using ms-images ---
+        result = run_training(
+                experiment_name="ms",
+                train_transform=None,
+                cfg=cfg,
+                device=DEVICE,
+                ms=MS
+            )
+        print(
+            "========================\n"
+            "FINAL MODEL SELECTION\n"
+            f"Selected experiment: Multispectral images\n"
+            f"Validation accuracy: {result['best_val_acc']:.4f}\n"
+            f"Saved as: final_model_ms.pt\n"
+            "========================"
+        )
 
 if __name__ == "__main__":
     main()
