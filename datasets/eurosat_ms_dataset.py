@@ -17,7 +17,7 @@ class EuroSATMSDataset(Dataset):
 
     def __init__(self, dataset_root: str, split_file: str) -> None:
         self.dataset_root = Path(dataset_root)
-
+        
         with open(split_file, "r") as f:
             self.samples: List[str] = [line.strip() for line in f]
 

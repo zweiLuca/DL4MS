@@ -5,6 +5,7 @@
 from torch.utils.data import DataLoader
 
 from datasets.eurosat_dataset import EuroSATDataset
+from datasets.eurosat_ms_dataset import EuroSATMSDataset
 
 
 class CustomDataLoader():
@@ -15,13 +16,21 @@ class CustomDataLoader():
             transform,
             batch_size: int,
             shuffle: bool,
-            num_workers: int = 4
+            num_workers: int = 4,
+            ms: bool = False
     ):
         self.dataset = EuroSATDataset(
             dataset_root=dataset_root,
             split_file=split_file,
             transform=transform
         )
+        
+        # --- For task 3 when using ms-images ---
+        if ms:
+            self.dataset = EuroSATMSDataset(
+                dataset_root=dataset_root,
+                split_file=split_file
+            )
 
         self.loader = DataLoader(
             dataset=self.dataset,
