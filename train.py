@@ -21,6 +21,8 @@ def run_training(
         device,
         ms = False
     ):
+    seed = cfg["seed"]
+
     PROJECT_ROOT = cfg["paths"]["project_root"]
     DATASET_ROOT = cfg["paths"]["dataset_root"]
 
@@ -54,7 +56,8 @@ def run_training(
         transform=train_transform,
         batch_size=BATCH_SIZE,
         shuffle=True,
-        ms=ms
+        ms=ms,
+        seed=seed
     ).get_data_loader()
 
     val_loader = CustomDataLoader(
@@ -63,7 +66,8 @@ def run_training(
         transform=val_transform,
         batch_size=BATCH_SIZE,
         shuffle=False,
-        ms=ms
+        ms=ms,
+        seed=seed
     ).get_data_loader()
 
     num_classes = len(train_loader.dataset.classes)
@@ -84,10 +88,12 @@ def run_training(
         "========================\n"
         f"Training {experiment_name} on {DEVICE} with:\n"
         f"- {model_description} from {DATASET_ROOT}\n"
-        f"- {len(train_loader.dataset)} images\n"
+        f"- {len(train_loader.dataset)} training images\n"
+        f"- {len(val_loader.dataset)} validation images\n"
         f"- {math.ceil(len(train_loader.dataset) / BATCH_SIZE)} batches\n"
         f"- batchsize {BATCH_SIZE}\n"
         f"- {NUM_EPOCHS} epochs\n"
+        f"- Seed {seed}\n"
         "========================\n"
     )
 
