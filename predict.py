@@ -30,11 +30,11 @@ def main():
     PROJECT_ROOT = cfg["paths"]["project_root"]
     DATASET_ROOT = cfg["paths"]["dataset_root"]
 
-    TEST_SPLIT = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["test"]
-
     # --- For task 3 when using ms-images ---
     if MS:
         TEST_SPLIT = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["test_ms"]
+    else:
+        TEST_SPLIT = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["test"]
 
     MODEL_PATH = PROJECT_ROOT / cfg["outputs"]["model_dir"]
     OUTPUT_PATH = PROJECT_ROOT / cfg["outputs"]["output_dir"]
@@ -45,12 +45,12 @@ def main():
         DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
     else:
         DEVICE = cfg["hardware"]["device"]
-
-    test_transform = get_eval_transform()
     
     # --- For task 3 when using ms-images ---
     if MS:
         test_transform = None
+    else:
+        test_transform = get_eval_transform()
 
     test_loader = CustomDataLoader(
         dataset_root=DATASET_ROOT,
@@ -64,13 +64,13 @@ def main():
 
     num_classes = len(test_loader.dataset.classes)
 
-    model = Model(num_classes=num_classes).get_model()
-    model_path = MODEL_PATH / f"final_model.pt"
-
     # --- For task 3 when using ms-images ---
     if MS:
         model = CustomClassifier(num_classes=num_classes)
         model_path = MODEL_PATH / f"final_model_ms.pt"
+    else:
+        model = Model(num_classes=num_classes).get_model()
+        model_path = MODEL_PATH / f"final_model.pt"
 
     model.load_state_dict(torch.load(model_path, map_location=DEVICE))
     model.to(DEVICE)
@@ -91,12 +91,12 @@ def main():
 
     OUTPUT_PATH.mkdir(exist_ok=True)
 
-    if not MS:
-        torch.save(logits, OUTPUT_PATH / "test_logits.pt")
-        torch.save(paths, OUTPUT_PATH / "test_paths.pt")
-    else:
+    if MS:
         torch.save(logits, OUTPUT_PATH / "test_logits_ms.pt")
         torch.save(paths, OUTPUT_PATH / "test_paths_ms.pt")
+    else:
+        torch.save(logits, OUTPUT_PATH / "test_logits.pt")
+        torch.save(paths, OUTPUT_PATH / "test_paths.pt")
 
     print(
         f"Accuracy: {acc}\n"

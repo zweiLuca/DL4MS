@@ -26,13 +26,13 @@ def run_training(
     PROJECT_ROOT = cfg["paths"]["project_root"]
     DATASET_ROOT = cfg["paths"]["dataset_root"]
 
-    TRAIN_SPLIT = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["train"]
-    VAL_SPLIT = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["val"]
-
     # --- For task 3 when using ms-images ---
     if ms:
         TRAIN_SPLIT = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["train_ms"]
         VAL_SPLIT = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["val_ms"]
+    else:
+        TRAIN_SPLIT = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["train"]
+        VAL_SPLIT = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["val"]
     
     MODEL_PATH = PROJECT_ROOT / cfg["outputs"]["model_dir"]
     OUTPUT_PATH = PROJECT_ROOT / cfg["outputs"]["output_dir"]
@@ -43,11 +43,11 @@ def run_training(
 
     DEVICE = device
 
-    val_transform = get_eval_transform()
-
     # --- For task 3 when using ms-images ---
     if ms:
         val_transform = None
+    else:
+        val_transform = get_eval_transform()
 
 
     train_loader = CustomDataLoader(
@@ -72,13 +72,13 @@ def run_training(
 
     num_classes = len(train_loader.dataset.classes)
 
-    model = Model(num_classes=num_classes).get_model()
-    model_description = "ResNet18 Model on RGB images"
-
     # --- For task 3 when using ms-images ---
     if ms:
         model = CustomClassifier(num_classes=num_classes)
         model_description = "Custom ResNet18 Model on Multispectral images"
+    else:
+        model = Model(num_classes=num_classes).get_model()
+        model_description = "ResNet18 Model on RGB images"
 
     model.to(DEVICE)
 
@@ -93,6 +93,7 @@ def run_training(
         f"- {math.ceil(len(train_loader.dataset) / BATCH_SIZE)} batches\n"
         f"- batchsize {BATCH_SIZE}\n"
         f"- {NUM_EPOCHS} epochs\n"
+        f"- learning rate = {LR}\n"
         f"- Seed {seed}\n"
         "========================\n"
     )
@@ -109,9 +110,10 @@ def run_training(
     MODEL_PATH.mkdir(exist_ok=True, parents=True)
     OUTPUT_PATH.mkdir(exist_ok=True, parents=True)
 
-    model_file = MODEL_PATH / f"best_model_{experiment_name}.pt"
     if ms:
         model_file = MODEL_PATH / f"final_model_{experiment_name}.pt"
+    else:
+        model_file = MODEL_PATH / f"best_model_{experiment_name}.pt"
 
     torch.save(best_state, model_file)
 

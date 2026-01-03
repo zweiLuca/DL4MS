@@ -22,17 +22,17 @@ class CustomDataLoader():
             ms: bool = False,
             seed: int = 0
     ):
-        self.dataset = EuroSATDataset(
-            dataset_root=dataset_root,
-            split_file=split_file,
-            transform=transform
-        )
-        
         # --- For task 3 when using ms-images ---
         if ms:
             self.dataset = EuroSATMSDataset(
                 dataset_root=dataset_root,
                 split_file=split_file
+            )
+        else:
+            self.dataset = EuroSATDataset(
+                dataset_root=dataset_root,
+                split_file=split_file,
+                transform=transform
             )
 
         g = torch.Generator()

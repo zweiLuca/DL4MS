@@ -91,25 +91,32 @@ def main():
     
     PROJECT_ROOT = Path(cfg["paths"]["project_root"])
     DATASET_ROOT = Path("coding_task_data")
-    OUTPUT_DIR = PROJECT_ROOT / cfg["outputs"]["output_dir"]
 
-    logits = torch.load(OUTPUT_DIR / "test_logits.pt")
-    paths = torch.load(OUTPUT_DIR / "test_paths.pt")
+    # --- For task 3 when using ms-images ---
+    if MS:
+        SPLIT_FILE = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["test_ms"]
+    else:
+        SPLIT_FILE = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["test"]
+    
+    OUTPUT_DIR = PROJECT_ROOT / cfg["outputs"]["output_dir"]
 
     # --- For task 3 when using ms-images ---
     if MS:
         logits = torch.load(OUTPUT_DIR / "test_logits_ms.pt")
         paths = torch.load(OUTPUT_DIR / "test_paths_ms.pt")
-
-    eval_transform = get_eval_transform()
+    else:
+        logits = torch.load(OUTPUT_DIR / "test_logits.pt")
+        paths = torch.load(OUTPUT_DIR / "test_paths.pt")
 
     # --- For task 3 when using ms-images ---
     if MS:
         eval_transform = None
+    else:
+        eval_transform = get_eval_transform()
 
     test_loader = CustomDataLoader(
         dataset_root=DATASET_ROOT,
-        split_file=PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["test"],
+        split_file=SPLIT_FILE,
         transform=eval_transform,
         batch_size=cfg["training"]["batch_size"],
         shuffle=False,
