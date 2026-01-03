@@ -1,13 +1,11 @@
-# =========================
-# ranking_final.py
-# =========================
-
-import random
-import torch
 import matplotlib.pyplot as plt
+import random
+import numpy as np
+import torch
 
 from pathlib import Path
 from PIL import Image
+from skimage.io import imread
 
 from datasets.dataloader import CustomDataLoader
 from datasets.transforms import get_eval_transform
@@ -22,7 +20,8 @@ def rank_top_bottom_classes(
     class_indices: list,
     class_names: list,
     k: int = 5,
-    save_dir: Path = None
+    save_dir: Path = None,
+    ms: bool = False
 ):
     if save_dir is None:
         save_dir = Path("outputs/ranking")
@@ -39,26 +38,56 @@ def rank_top_bottom_classes(
         def save_plot(indices, title, suffix):
             plt.figure(figsize=(12, 3))
             for i, idx in enumerate(indices):
-                img_path = dataset_root / paths[idx]
-                img = Image.open(img_path).convert("RGB")
+                img = load_image_for_ranking(paths[idx], dataset_root, ms)
+                
                 plt.subplot(1, k, i + 1)
                 plt.imshow(img)
                 plt.axis("off")
                 plt.title(f"{scores[idx]:.2f}", fontsize=10)
+
             plt.suptitle(title, fontsize=12)
             plt.tight_layout()
+
             file_path = save_dir / f"{cls_name}_{suffix}.png"
             plt.savefig(file_path, bbox_inches="tight")
             plt.close()
+
             print(f"Saved: {file_path}")
 
-        save_plot(top_idx, f"Top-{k} images for class '{cls_name}'", "top")
-        save_plot(bottom_idx, f"Bottom-{k} images for class '{cls_name}'", "bottom")
+        if ms:
+            save_plot(top_idx, f"Top-{k} images for class '{cls_name}'", "top_ms")
+            save_plot(bottom_idx, f"Bottom-{k} images for class '{cls_name}'", "bottom_ms")
+        else:
+            save_plot(top_idx, f"Top-{k} images for class '{cls_name}'", "top")
+            save_plot(bottom_idx, f"Bottom-{k} images for class '{cls_name}'", "bottom")
 
+def load_image_for_ranking(path: str, dataset_root: Path, ms: bool):
+    img_path = dataset_root / path
+
+    if not ms:
+        return Image.open(img_path).convert("RGB")
+
+    img = imread(img_path).astype("float32") / 65535.0
+
+    # B04 (Red), B03 (Green), B02 (Blue)
+    rgb = img[:, :, [3, 2, 1]]
+
+    p1, p99 = np.percentile(rgb, (1, 99))
+    rgb = (rgb - p1) / (p99 - p1 + 1e-6)
+    rgb = np.clip(rgb, 0, 1)
+
+    rgb = (rgb * 255).clip(0, 255).astype("uint8")
+
+    return Image.fromarray(rgb)
 
 def main():
     cfg = load_config()
     set_seed(cfg["seed"])
+
+    # --- For task 3 when using ms-images ---
+    MS = False
+    if cfg["paths"]["dataset_root"].match("*_MS"):
+        MS = True
     
     PROJECT_ROOT = Path(cfg["paths"]["project_root"])
     DATASET_ROOT = Path("coding_task_data")
@@ -67,12 +96,25 @@ def main():
     logits = torch.load(OUTPUT_DIR / "test_logits.pt")
     paths = torch.load(OUTPUT_DIR / "test_paths.pt")
 
+    # --- For task 3 when using ms-images ---
+    if MS:
+        logits = torch.load(OUTPUT_DIR / "test_logits_ms.pt")
+        paths = torch.load(OUTPUT_DIR / "test_paths_ms.pt")
+
+    eval_transform = get_eval_transform()
+
+    # --- For task 3 when using ms-images ---
+    if MS:
+        eval_transform = None
+
     test_loader = CustomDataLoader(
         dataset_root=DATASET_ROOT,
         split_file=PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["test"],
-        transform=get_eval_transform(),
+        transform=eval_transform,
         batch_size=cfg["training"]["batch_size"],
-        shuffle=False
+        shuffle=False,
+        ms=MS,
+        seed=cfg["seed"]
     ).get_data_loader()
 
     class_names = test_loader.dataset.classes
@@ -87,7 +129,8 @@ def main():
         class_indices=class_indices,
         class_names=class_names,
         k=5,
-        save_dir=OUTPUT_DIR / "ranking"
+        save_dir=OUTPUT_DIR / "ranking",
+        ms=MS
     )
 
 
