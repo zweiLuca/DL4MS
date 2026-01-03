@@ -21,7 +21,7 @@ splits:
   test_ms: "test_ms.txt"
 
 training:
-  batch_size: 16 # Set the batch size for each training epoch
+  batch_size: 64 # Set the batch size for each training epoch
   num_epochs: 20 # Set the number of epochs
   learning_rate: 0.0001 # Set the learning rate
 
