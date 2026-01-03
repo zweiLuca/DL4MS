@@ -5,7 +5,7 @@
 import torch
 import torch.nn as nn
 
-from models.resnet_feature_extractor import ResNet18FeatureExtractor
+from models.feature_extractor import ResNet18FeatureExtractor
 
 
 class CustomClassifier(nn.Module):
