@@ -43,9 +43,9 @@ def rank_top_bottom_classes(
                 plt.subplot(1, k, i + 1)
                 plt.imshow(img)
                 plt.axis("off")
-                plt.title(f"{scores[idx]:.2f}", fontsize=10)
+                plt.title(f"{scores[idx]:.2f}", fontsize=16)
 
-            plt.suptitle(title, fontsize=12)
+            plt.suptitle(title, fontsize=20)
             plt.tight_layout()
 
             file_path = save_dir / f"{cls_name}_{suffix}.png"
