@@ -5,7 +5,7 @@ Luca Martin     - 1234567
 
 ## Setup
 
-- run `python -m venv venv` inside the project root folder in the terminal
+- run `python3 -m venv venv` inside the project root folder in the terminal
 - start the virtual environment
 - run `pip install -r requirements.txt` in the terminal
 - unzip the images (e.g. into `./coding_task_data/EuroSAT_RGB` and `./coding_task_data/EuroSAT_MS`)
@@ -66,3 +66,28 @@ project_root/
 ├── reproduce.py               # Task 2 & 3: reproduction routine
 └── train.py                   # Task 2 & 3: training script
 ```
+
+## Results
+LR 0.0001
+Batch Size 16
+
+### EuroSAT RGB
+**Mild data augmentation**
+Best Model
+- Epoch 19
+- Val Acc: 0.9474
+**Strong data augmentation**
+Best Model
+- Epoch 19
+- Val Acc: 0.9236
+
+**Final Model**
+- Test Acc: 0.9336
+- TPR: {0: 0.942, 1: 0.938, 2: 0.912, 3: 0.93, 4: 0.88, 5: 0.9, 6: 0.898, 7: 0.996, 8: 0.952, 9: 0.988}
+
+### EuroSAT MS
+Best Model
+- Epoch 16
+- Val Acc: 0.9176
+- Test Acc: 0.8698
+- TPR: {0: 0.784, 1: 1.0, 2: 0.92, 3: 0.784, 4: 0.58, 5: 0.91, 6: 0.768, 7: 0.988, 8: 0.982, 9: 0.982}
