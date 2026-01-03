@@ -58,8 +58,7 @@ def main():
         transform=test_transform,
         batch_size=BATCH_SIZE,
         shuffle=False,
-        ms=MS,
-        seed=cfg["seed"]
+        ms=MS
     ).get_data_loader()
 
     num_classes = len(test_loader.dataset.classes)

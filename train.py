@@ -21,8 +21,6 @@ def run_training(
         device,
         ms = False
     ):
-    seed = cfg["seed"]
-
     PROJECT_ROOT = cfg["paths"]["project_root"]
     DATASET_ROOT = cfg["paths"]["dataset_root"]
 
@@ -56,8 +54,7 @@ def run_training(
         transform=train_transform,
         batch_size=BATCH_SIZE,
         shuffle=True,
-        ms=ms,
-        seed=seed
+        ms=ms
     ).get_data_loader()
 
     val_loader = CustomDataLoader(
@@ -66,8 +63,7 @@ def run_training(
         transform=val_transform,
         batch_size=BATCH_SIZE,
         shuffle=False,
-        ms=ms,
-        seed=seed
+        ms=ms
     ).get_data_loader()
 
     num_classes = len(train_loader.dataset.classes)
@@ -84,6 +80,8 @@ def run_training(
 
     optimizer = torch.optim.Adam(params=model.parameters(), lr=LR)
 
+    seed = cfg["seed"]
+    
     print(
         "========================\n"
         f"Training {experiment_name} on {DEVICE} with:\n"
@@ -93,7 +91,7 @@ def run_training(
         f"- {math.ceil(len(train_loader.dataset) / BATCH_SIZE)} batches\n"
         f"- batchsize {BATCH_SIZE}\n"
         f"- {NUM_EPOCHS} epochs\n"
-        f"- learning rate = {LR}\n"
+        f"- learning rate {LR}\n"
         f"- Seed {seed}\n"
         "========================\n"
     )

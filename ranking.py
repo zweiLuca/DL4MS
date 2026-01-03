@@ -120,8 +120,7 @@ def main():
         transform=eval_transform,
         batch_size=cfg["training"]["batch_size"],
         shuffle=False,
-        ms=MS,
-        seed=cfg["seed"]
+        ms=MS
     ).get_data_loader()
 
     class_names = test_loader.dataset.classes
