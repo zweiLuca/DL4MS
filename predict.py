@@ -90,22 +90,8 @@ def main():
         return_paths=True
     )
 
-    logits = test_metrics["logits"]
-    paths = test_metrics["paths"]
-
     acc = test_metrics["accuracy"]
     tpr = test_metrics["tpr_per_class"]
-
-    OUTPUT_PATH.mkdir(exist_ok=True)
-
-    if MS:
-        torch.save(logits, OUTPUT_PATH / "test_logits_ms.pt")
-        torch.save(paths, OUTPUT_PATH / "test_paths_ms.pt")
-    else:
-        torch.save(logits, OUTPUT_PATH / "test_logits.pt")
-        torch.save(paths, OUTPUT_PATH / "test_paths.pt")
-
-    print("[INFO] Test logits and paths saved.\n")
 
     print(
         f"Prediction finished: \n"
