@@ -54,3 +54,42 @@ project_root/
 ├── reproduce.py               # Task 2 & 3: reproduction routine
 └── train.py                   # Task 2 & 3: training script
 ```
+
+========================
+Training mild_aug on cuda with:
+- ResNet18 Model on RGB images from coding_task_data/EuroSAT_RGB
+- 10000 training images
+- 5000 validation images
+- 625 batches
+- batchsize 16
+- 20 epochs
+- learning rate 0.0001
+- Seed 1234567
+========================
+
+Best model:
+- Epoch 16
+- val_acc 0.9466
+
+
+========================
+Training strong_aug on cuda with:
+- ResNet18 Model on RGB images from coding_task_data/EuroSAT_RGB
+- 10000 training images
+- 5000 validation images
+- 625 batches
+- batchsize 16
+- 20 epochs
+- learning rate 0.0001
+- Seed 1234567
+========================
+
+Best model:
+- Epoch 19
+- val_acc 0.9200
+
+Final model: mild aug
+Validation accuracy: 0.9466
+- Accuracy: 0.923
+- TPR: {0: 0.928, 1: 0.908, 2: 0.954, 3: 0.9, 4: 0.91, 5: 0.894, 6: 0.864, 7: 0.978, 8: 0.908, 9: 0.986}
+
