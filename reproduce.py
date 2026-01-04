@@ -20,6 +20,8 @@ from utils.config import load_config
 def main():
     cfg = load_config()
     set_seed(cfg["seed"])
+
+    SAVE_LOGITS = cfg["reproduce"]["save_logits"]
     
     # --- For task 3 when using ms-images ---
     MS = False
@@ -65,6 +67,7 @@ def main():
     print(
         "========================\n"
         f"Running the reproduction routine on {DEVICE} with:\n"
+        f"- save_logits: {SAVE_LOGITS}\n"
         f"- dataset {DATASET_ROOT}\n"
         f"- {len(test_loader.dataset)} test images\n"
         "========================\n"
@@ -100,7 +103,7 @@ def main():
         saved_logits_path = OUTPUT_PATH / "test_logits.pt"
         saved_paths_path = OUTPUT_PATH / "test_paths.pt"
 
-    if cfg["reproduce"]["save_logits"]:
+    if SAVE_LOGITS:
         OUTPUT_PATH.mkdir(exist_ok=True)
         torch.save(new_logits, saved_logits_path)
         torch.save(new_paths, saved_paths_path)
