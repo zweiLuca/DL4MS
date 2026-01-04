@@ -109,15 +109,7 @@ def run_training(
         num_epochs=NUM_EPOCHS
     )
 
-    MODEL_PATH.mkdir(exist_ok=True, parents=True)
     OUTPUT_PATH.mkdir(exist_ok=True, parents=True)
-
-    if ms:
-        model_file = MODEL_PATH / f"final_model_{experiment_name}.pt"
-    else:
-        model_file = MODEL_PATH / f"best_model_{experiment_name}.pt"
-
-    torch.save(best_state, model_file)
 
     plots_dir = OUTPUT_PATH / "plots"
     plots_dir.mkdir(exist_ok=True, parents=True)
@@ -143,8 +135,7 @@ def run_training(
     return {
         "experiment": experiment_name,
         "best_val_acc": best_val_acc,
-        "best_state": best_state,
-        "model_path": model_file
+        "best_state": best_state
     }
 
 def main():
@@ -158,6 +149,7 @@ def main():
 
     PROJECT_ROOT = cfg["paths"]["project_root"]
     MODEL_PATH = PROJECT_ROOT / cfg["outputs"]["model_dir"]
+    MODEL_PATH.mkdir(exist_ok=True, parents=True)
 
     # --- For task 3 when using ms-images ---
     MS = False
@@ -212,6 +204,10 @@ def main():
                 device=DEVICE,
                 ms=MS
             )
+        
+        model_file = MODEL_PATH / "final_model_ms.pt"
+        torch.save(result["best_state"], model_file)
+
         print(
             "========================\n"
             "FINAL MODEL SELECTION\n"
