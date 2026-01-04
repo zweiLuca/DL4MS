@@ -6,7 +6,7 @@ import math
 import torch
 
 from datasets.dataloader import CustomDataLoader
-from datasets.transforms import get_eval_transform, get_train_transform_mild, get_train_transform_strong
+from datasets.transforms import get_eval_transform, get_ms_eval_transform, get_ms_train_transform_mild, get_ms_train_transform_strong, get_train_transform_mild, get_train_transform_strong
 from evaluation.plots import plot_validation_accuracy, plot_validation_tpr
 from models.custom_classifier import CustomClassifier
 from models.model import Model
@@ -47,7 +47,7 @@ def run_training(
 
     # --- For task 3 when using ms-images ---
     if ms:
-        val_transform = None
+        val_transform = get_ms_eval_transform()
     else:
         val_transform = get_eval_transform()
 
@@ -197,23 +197,41 @@ def main():
         )
     else:
         # --- For task 3 when using ms-images ---
-        result = run_training(
-                experiment_name="ms",
-                train_transform=None,
+
+        # mild augmentation
+        results.append(
+            run_training(
+                experiment_name="mild_aug_ms",
+                train_transform=get_ms_train_transform_mild(),
                 cfg=cfg,
                 device=DEVICE,
                 ms=MS
             )
-        
-        model_file = MODEL_PATH / "final_model_ms.pt"
-        torch.save(result["best_state"], model_file)
+        )
+
+        # strong augmentation
+        results.append(
+            run_training(
+                experiment_name="strong_aug_ms",
+                train_transform=get_ms_train_transform_strong(),
+                cfg=cfg,
+                device=DEVICE,
+                ms=MS
+            )
+        )
+
+        best = max(results, key=lambda x: x["best_val_acc"])
+
+        final_model_path = MODEL_PATH / "final_model_ms.pt"
+    
+        torch.save(best["best_state"], final_model_path)
 
         print(
             "========================\n"
             "FINAL MODEL SELECTION\n"
-            f"Selected experiment: Multispectral images\n"
-            f"Validation accuracy: {result['best_val_acc']:.4f}\n"
-            f"Saved as: final_model_ms.pt\n"
+            f"Selected experiment: {best['experiment']}\n"
+            f"Validation accuracy: {best['best_val_acc']:.4f}\n"
+            f"Saved as: {final_model_path}\n"
             "========================"
         )
 

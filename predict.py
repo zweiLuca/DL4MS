@@ -5,7 +5,7 @@
 import torch
 
 from datasets.dataloader import CustomDataLoader
-from datasets.transforms import get_eval_transform
+from datasets.transforms import get_eval_transform, get_ms_eval_transform
 from evaluation.eval import evaluate
 from models.custom_classifier import CustomClassifier
 from models.model import Model
@@ -37,7 +37,6 @@ def main():
         TEST_SPLIT = PROJECT_ROOT / cfg["splits"]["split_dir"] / cfg["splits"]["test"]
 
     MODEL_PATH = PROJECT_ROOT / cfg["outputs"]["model_dir"]
-    OUTPUT_PATH = PROJECT_ROOT / cfg["outputs"]["output_dir"]
 
     BATCH_SIZE = cfg["training"]["batch_size"]
 
@@ -48,7 +47,7 @@ def main():
     
     # --- For task 3 when using ms-images ---
     if MS:
-        test_transform = None
+        test_transform = get_ms_eval_transform()
     else:
         test_transform = get_eval_transform()
 

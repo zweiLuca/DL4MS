@@ -44,6 +44,9 @@ class EuroSATMSDataset(Dataset):
         image = image[:, :, self.CHANNEL_IDXS]
         image = torch.from_numpy(image.transpose(2, 0, 1))
 
+        if self.transform is not None:
+            image = self.transform(image)
+
         return image, label, rel_path
     
 

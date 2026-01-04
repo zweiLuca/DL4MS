@@ -5,7 +5,7 @@
 import torch
 
 from datasets.dataloader import CustomDataLoader
-from datasets.transforms import get_eval_transform
+from datasets.transforms import get_eval_transform, get_ms_eval_transform
 from evaluation.eval import evaluate
 from models.custom_classifier import CustomClassifier
 from models.model import Model
@@ -49,7 +49,7 @@ def main():
 
     # --- For task 3 when using ms-images ---
     if MS:
-        test_transform = None
+        test_transform = get_ms_eval_transform()
     else:
         test_transform = get_eval_transform()
 
