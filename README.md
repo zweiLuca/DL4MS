@@ -1,9 +1,9 @@
 # Deep Learning - Mandatory Coding Task
 ```
-Luca Martin     - 1234567
+Luca Martin - 1234567
 ```
 
-For detailed instructions and the final results, read the file "Report_Luca_Martin_1234567.pdf".
+For detailed instructions and the final results, read the file `"Report_Luca_Martin_1234567.pdf"`.
 
 ## Structure
 ```
@@ -54,9 +54,3 @@ project_root/
 ├── reproduce.py               # Task 2 & 3: reproduction routine
 └── train.py                   # Task 2 & 3: training script
 ```
-
-Final Model
-- Epoch 16
-- Val Acc: 0.9176
-- Test Acc: 0.8698
-- TPR: {0: 0.784, 1: 1.0, 2: 0.92, 3: 0.784, 4: 0.58, 5: 0.91, 6: 0.768, 7: 0.988, 8: 0.982, 9: 0.982}
