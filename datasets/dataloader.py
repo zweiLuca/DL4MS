@@ -23,7 +23,8 @@ class CustomDataLoader():
         if ms:
             self.dataset = EuroSATMSDataset(
                 dataset_root=dataset_root,
-                split_file=split_file
+                split_file=split_file,
+                transform=transform
             )
         else:
             self.dataset = EuroSATDataset(
