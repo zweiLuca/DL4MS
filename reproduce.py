@@ -62,6 +62,14 @@ def main():
 
     num_classes = len(test_loader.dataset.classes)
 
+    print(
+        "========================\n"
+        f"Running the reproduction routine on {DEVICE} with:\n"
+        f"- dataset {DATASET_ROOT}\n"
+        f"- {len(test_loader.dataset)} test images\n"
+        "========================\n"
+    )
+
     # --- For task 3 when using ms-images ---
     if MS:
         model = CustomClassifier(num_classes=num_classes)
@@ -82,37 +90,50 @@ def main():
     )
 
     new_logits = metrics["logits"]
+    new_paths = metrics["paths"]
 
     # --- For task 3 when using ms-images ---
     if MS:
         saved_logits_path = OUTPUT_PATH / "test_logits_ms.pt"
+        saved_paths_path = OUTPUT_PATH / "test_paths_ms.pt"
     else:
         saved_logits_path = OUTPUT_PATH / "test_logits.pt"
+        saved_paths_path = OUTPUT_PATH / "test_paths.pt"
 
     if cfg["reproduce"]["save_logits"]:
         OUTPUT_PATH.mkdir(exist_ok=True)
         torch.save(new_logits, saved_logits_path)
-        print("[INFO] Test logits saved.")
+        torch.save(new_paths, saved_paths_path)
+        print("[INFO] Test logits and paths saved.")
         return
 
     if not saved_logits_path.exists():
         raise FileNotFoundError(
             "Saved logits not found. Run with save_logits: True once."
         )
+
+    if not saved_paths_path.exists():
+        raise FileNotFoundError(
+            "Saved paths not found. Run with save_logits: True once."
+        )
     
     old_logits = torch.load(saved_logits_path)
+    old_paths = torch.load(saved_paths_path)
 
     if old_logits.shape != new_logits.shape:
         raise RuntimeError(
             f"Shape mismatch: old {old_logits.shape}, new {new_logits.shape}"
         )
+    
+    if old_paths != new_paths:
+        raise RuntimeError("Image order mismatch between runs!")
 
     if torch.allclose(old_logits, new_logits, atol=1e-6):
         print("[SUCCESS] Reproduction successful: logits match.")
     else:
         max_diff = (old_logits - new_logits).abs().max().item()
         raise RuntimeError(
-            f"[FAILURE] Logits differ! Max abs diff: {max_diff}"
+            f"[FAILURE] Logits differ! The maximal absolute difference is: {max_diff}"
         )
     
 if __name__ == "__main__":
