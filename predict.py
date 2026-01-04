@@ -63,6 +63,14 @@ def main():
 
     num_classes = len(test_loader.dataset.classes)
 
+    print(
+        "========================\n"
+        f"Running the prediction on {DEVICE} with:\n"
+        f"- dataset {DATASET_ROOT}\n"
+        f"- {len(test_loader.dataset)} test images\n"
+        "========================\n"
+    )
+
     # --- For task 3 when using ms-images ---
     if MS:
         model = CustomClassifier(num_classes=num_classes)
@@ -97,12 +105,13 @@ def main():
         torch.save(logits, OUTPUT_PATH / "test_logits.pt")
         torch.save(paths, OUTPUT_PATH / "test_paths.pt")
 
-    print(
-        f"Accuracy: {acc}\n"
-        f"TPR: {tpr}\n"
-    )
-    print("Test logits saved.")
+    print("[INFO] Test logits and paths saved.\n")
 
+    print(
+        f"Prediction finished: \n"
+        f"- Accuracy: {acc}\n"
+        f"- TPR: {tpr}\n"
+    )
 
 if __name__ == "__main__":
     main()
