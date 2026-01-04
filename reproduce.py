@@ -97,7 +97,7 @@ def main():
 
     if not saved_logits_path.exists():
         raise FileNotFoundError(
-            "Saved logits not found. Run with --save_logits once."
+            "Saved logits not found. Run with save_logits: True once."
         )
     
     old_logits = torch.load(saved_logits_path)
