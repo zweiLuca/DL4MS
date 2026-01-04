@@ -1,3 +1,7 @@
+# =======================
+# mandatory coding task 2
+# =======================
+
 import matplotlib.pyplot as plt
 import random
 import numpy as np
