@@ -65,6 +65,8 @@ class DataSplitter():
 
         if not self._validate_splits():
             raise AssertionError("Error: Splits are not disjoint!")
+        
+        print("Splits are disjoint.")
 
         self._save_splits()
     
