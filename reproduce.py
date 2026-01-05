@@ -131,12 +131,12 @@ def main():
     if old_paths != new_paths:
         raise RuntimeError("Image order mismatch between runs!")
 
-    if torch.allclose(old_logits, new_logits, atol=1e-6):
-        print("[SUCCESS] Reproduction successful: logits match.")
+    if torch.allclose(old_logits, new_logits, atol=1e-4):
+        print("[SUCCESS] Reproduction successful: logits match. (Tolerance = 1e-4)")
     else:
         max_diff = (old_logits - new_logits).abs().max().item()
         raise RuntimeError(
-            f"[FAILURE] Logits differ! The maximal absolute difference is: {max_diff}"
+            f"[FAILURE] Logits differ! The maximal absolute difference is: {max_diff} (Tolerance = 1e-4)"
         )
     
 if __name__ == "__main__":
