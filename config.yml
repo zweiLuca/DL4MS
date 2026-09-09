@@ -2,7 +2,7 @@
 # CONFIG: Change settings here
 # ============================
 
-seed: 1234567 # Matriculation number Luca Martin
+seed: 1234567
 
 paths:
   project_root: "."

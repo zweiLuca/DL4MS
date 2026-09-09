@@ -1,11 +1,11 @@
 # Deep Learning - Mandatory Coding Task
-```
-Luca Martin - 1234567
-```
 
-For detailed instructions and the final results, read the file `"Report_Luca_Martin_1234567.pdf"`.
+> **Note on Reproducibility:** For privacy reasons, the seed used in the configuration and documentation has been anonymized to "1234567". Consequently, running reproduce.py may yield different numerical results than those presented in this documentation.
+
+For detailed instructions and the final results, read the file `"Report.pdf"`.
 
 ## Structure
+
 ```
 project_root/
 │
